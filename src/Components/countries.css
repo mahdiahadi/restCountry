@@ -1,0 +1,36 @@
+.pagination{
+    list-style-type: none;
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    gap: 5px;
+    margin-bottom: 5rem;
+}
+.pagination .page-num{
+    color: black;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 3px ;
+    font-weight: 400;
+}
+.pagination .page-num:hover{
+    background-color: lightgray;
+    color: #fff;
+}
+.pagination .active{
+    background-color: lightgray;
+}
+#select {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: rgb(247, 245, 245);
+    padding: 8px;
+    font-family: inherit;
+    border: none;
+    border-radius: 5px;
+    color:black;
+  }
