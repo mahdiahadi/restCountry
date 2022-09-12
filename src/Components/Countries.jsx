@@ -89,9 +89,6 @@ const Countries = ({simplified }) => {
        )
        setCountries(fetchData?.slice(0, endOffset))
        setPageCount(Math.ceil( fetchData?.length / itemsPerPage))
-
-     
-      
   
     },[itemOffset, itemsPerPage,countriesData,searchTerms]);
 
@@ -122,18 +119,23 @@ const Countries = ({simplified }) => {
               setCountries(countriesData?.slice(itemOffset, endOffset));
               setPageCount(Math.ceil( countriesData?.length / itemsPerPage)) ;
      
-          }, [itemOffset, itemsPerPage,countriesData]);
+          }, [itemOffset, itemsPerPage]);
      
 
       const handlePageClick = (event) => {
-         
-             const searchOffset = (event.selected * itemsPerPage) % countries?.length;
-                 setItemOffset(searchOffset);
+              if(searchTerms){
+                const searchOffset = (event.selected * itemsPerPage) % countries?.length;
+                console.log(searchTerms)
+                setItemOffset(searchOffset);
+              }
+              else if(region){
+                const regionOffset = (event.selected * itemsPerPage) % data?.length;
+                console.log(regionOffset)
+                setItemOffset(regionOffset);
+              }
 
-              const regionOffset = (event.selected * itemsPerPage) % data?.length;
-              setItemOffset(regionOffset);
-             
             const newOffset = (event.selected * itemsPerPage) % countriesData?.length;
+            console.log(newOffset)
             setItemOffset(newOffset); 
        
        };
