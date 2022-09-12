@@ -36,7 +36,6 @@ const Countries = ({simplified }) => {
     ]
     const [isLoading, setIsLoading] = useState(true)
     const {data:countriesData,isFetching}=useGetCountriesQuery();
-    console.log(countriesData)
     const [region,setRegion]=useState('')
      const {data}=useGetCountryCategoryQuery(region)
     const [countries, setCountries] = useState()
@@ -45,7 +44,7 @@ const Countries = ({simplified }) => {
 
     const [pageCount, setPageCount] = useState(0);
     const [itemOffset, setItemOffset] = useState(0);
-    const itemsPerPage=10;
+    const itemsPerPage=15;
 
     const sorting=(col)=>{
       if (order==='ASC'){
@@ -79,68 +78,66 @@ const Countries = ({simplified }) => {
          setOrder("ASC")
        }
     }
-
-  
-    useEffect(() => {
+   
+    useEffect(()=>{
       const endOffset = itemOffset + itemsPerPage;
-      //   if(filterRegions){
-      //    setCountries(data?.slice(itemOffset, endOffset));
-      //    setPageCount(Math.ceil( data?.length / itemsPerPage));
-      // }else{ }
-        setCountries(countriesData?.slice(itemOffset, endOffset));
-        setPageCount(Math.ceil( countriesData?.length / itemsPerPage));
+         let fetchData=countriesData?.filter((item) =>
+         Object.values(item)
+           .join("")
+           .toLowerCase()
+           .includes(searchTerms.toLowerCase())
+       )
+       setCountries(fetchData?.slice(0, endOffset))
+       setPageCount(Math.ceil( fetchData?.length / itemsPerPage))
+
      
       
-      }, [itemOffset, itemsPerPage,countriesData,data]);
+  
+    },[itemOffset, itemsPerPage,countriesData,searchTerms]);
+
+    
+     
+
       useEffect(() => {
       
-        filterRegions();
-        // eslint-disable-next-line
-        }, [data])
-        const filterRegions =  (value) => {
-           if(value===" "){
-             setRegion(" ")
-             setCountries(countriesData)
-           }else{ 
-          setCountries(data)
-            setRegion(value)
-          }
-         
-        }
-
-      const handlePageClick = (event) => {
-        // if(filterRegions){
-        //   const regionOffset = (event.selected * itemsPerPage) % data?.length;
-        //   setItemOffset(regionOffset);
-        // }  
-          const newOffset = (event.selected * itemsPerPage) % countriesData?.length;
-          setItemOffset(newOffset);
-      
-         
+        let filterRegions =  (value) => {
+          const endOffset = itemOffset + itemsPerPage;
+          if(region===" "){
+            setRegion(" ")
+            setCountries(countriesData);
         
-       };
+          }else{ 
+           setCountries(data?.slice(0, endOffset))
+           setPageCount(Math.ceil( data?.length / itemsPerPage))
+           setRegion(value)
+         }
+        
+       }
+       filterRegions()
+        // eslint-disable-next-line
+        }, [itemOffset, itemsPerPage,data])
 
-   
-    
+        useEffect(() => {
+          const endOffset = itemOffset + itemsPerPage;
+              setCountries(countriesData?.slice(itemOffset, endOffset));
+              setPageCount(Math.ceil( countriesData?.length / itemsPerPage)) ;
+     
+          }, [itemOffset, itemsPerPage,countriesData]);
      
 
-      useEffect(()=>{
-        const endOffset = itemOffset + itemsPerPage;
-           let fetchData=countriesData?.filter((item) =>
-           Object.values(item)
-             .join("")
-             .toLowerCase()
-             .includes(searchTerms.toLowerCase())
-         )
-         setCountries(fetchData?.slice(0, endOffset))
-         setPageCount(Math.ceil( fetchData?.length / itemsPerPage))
-    
-      },[itemOffset, itemsPerPage,countriesData,searchTerms]);
+      const handlePageClick = (event) => {
+         
+             const searchOffset = (event.selected * itemsPerPage) % countries?.length;
+                 setItemOffset(searchOffset);
 
-   
+              const regionOffset = (event.selected * itemsPerPage) % data?.length;
+              setItemOffset(regionOffset);
+             
+            const newOffset = (event.selected * itemsPerPage) % countriesData?.length;
+            setItemOffset(newOffset); 
+       
+       };
 
-
-  
   return (
     <>
            <div className="container">
@@ -160,7 +157,7 @@ const Countries = ({simplified }) => {
           <select
             name="select"
             id="select"
-            onChange={ (e)=>filterRegions(e.target.value)}
+            onChange={ (e)=>setRegion(e.target.value)}
             value={regions.name}
           >
              <option value="">Filter by region</option> 
